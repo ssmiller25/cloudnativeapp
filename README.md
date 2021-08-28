@@ -25,19 +25,6 @@ Online Boutique consists of a 10-tier microservices application. The application
 web-based e-commerce app where users can browse items,
 add them to the cart, and purchase them.
 
-**Google uses this application to demonstrate use of technologies like
-Kubernetes/GKE, Istio, Stackdriver, gRPC and OpenCensus**. This application
-works on any Kubernetes cluster, as well as Google
-Kubernetes Engine. It’s **easy to deploy with little to no configuration**.
-
-If you’re using this demo, please **★Star** this repository to show your interest!
-
-> 👓**Note to Googlers:** Please fill out the form at
-> [go/microservices-demo](http://go/microservices-demo) if you are using this
-> application.
-
-Looking for the old Hipster Shop frontend interface? Use the [manifests](https://github.com/GoogleCloudPlatform/microservices-demo/tree/v0.1.5/kubernetes-manifests) in release [v0.1.5](https://github.com/GoogleCloudPlatform/microservices-demo/releases/v0.1.5).
-
 ## Screenshots
 
 | Home Page                                                                                                         | Checkout Screen                                                                                                    |
@@ -46,55 +33,27 @@ Looking for the old Hipster Shop frontend interface? Use the [manifests](https:/
 
 ## Quickstart (GKE)
 
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/GoogleCloudPlatform/microservices-demo&cloudshell_workspace=.&cloudshell_tutorial=docs/cloudshell-tutorial.md)
 
-1. **[Create a Google Cloud Platform project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#creating_a_project)** or use an existing project. Set the `PROJECT_ID` environment variable and ensure the Google Kubernetes Engine and Cloud Operations APIs are enabled.
-
-```
-PROJECT_ID="<your-project-id>"
-gcloud services enable container.googleapis.com --project ${PROJECT_ID}
-gcloud services enable monitoring.googleapis.com \
-    cloudtrace.googleapis.com \
-    clouddebugger.googleapis.com \
-    cloudprofiler.googleapis.com \
-    --project ${PROJECT_ID}
-```
-
-2. **Clone this repository.**
+1. **Clone this repository.**
 
 ```
-git clone https://github.com/GoogleCloudPlatform/microservices-demo.git
-cd microservices-demo
+git clone https://github.com/ssmiller25/civo-ffdemo.git
+cd civo-ffdemo
 ```
 
-3. **Create a GKE cluster.**
+2. **Provision the Prod and Dev Civo Clusters to demo fast feedback taks.**
 
-- GKE autopilot mode (see [Autopilot
-overview](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-overview)
-to learn more):
-
-```
-REGION=us-central1
-gcloud container clusters create-auto onlineboutique \
-    --project=${PROJECT_ID} --region=${REGION}
+```sh
+make infra-up
 ```
 
-- GKE Standard mode:
-
-```
-ZONE=us-central1-b
-gcloud container clusters create onlineboutique \
-    --project=${PROJECT_ID} --zone=${ZONE} \
-    --machine-type=e2-standard-2 --num-nodes=4
-```
-
-4. **Deploy the sample app to the cluster.**
+3. **Deploy the sample app to the cluster.**
 
 ```
 kubectl apply -f ./release/kubernetes-manifests.yaml
 ```
 
-5. **Wait for the Pods to be ready.**
+4. **Wait for the Pods to be ready.**
 
 ```
 kubectl get pods
@@ -118,7 +77,7 @@ redis-cart-5f59546cdd-5jnqf              1/1     Running   0          2m58s
 shippingservice-6ccc89f8fd-v686r         1/1     Running   0          2m58s
 ```
 
-7. **Access the web frontend in a browser** using the frontend's `EXTERNAL_IP`.
+5. **Access the web frontend in a browser** using the frontend's `EXTERNAL_IP`.
 
 ```
 kubectl get service frontend-external | awk '{print $4}'
@@ -133,11 +92,10 @@ EXTERNAL-IP
 
 **Note**- you may see `<pending>` while GCP provisions the load balancer. If this happens, wait a few minutes and re-run the command.
 
-8. [Optional] **Clean up**:
+6. [Optional] **Clean up**:
 
 ```
-gcloud container clusters delete onlineboutique \
-    --project=${PROJECT_ID} --zone=${ZONE}
+make infra-down
 ```
 
 ## Other Deployment Options
