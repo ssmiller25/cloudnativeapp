@@ -9,7 +9,7 @@ USER=$(shell id -u)
 GROUP=$(shell id -g)
 
 TERRAFORM=docker run --rm -it -u $(USER):$(GROUP) -v $$(pwd)/infra:/workdir $(TERRAFORM_CONTAINER) 
-CIVO=docker run --rm -it -u $(USER):$(GROUP) -v $$HOME/.civo.json:/.civo.json -v $$HOME/.kube/config:/.kube/config $(CIVO_CONTAINER)
+CIVO=docker run --rm -it -u $(USER):$(GROUP) -v $$HOME/.civo.json:/.civo.json -v $$HOME/.kube:/.kube $(CIVO_CONTAINER)
 
 ${HOME}/.civo.json:
 	@echo "Creating .civo.json configuration file"
