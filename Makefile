@@ -29,7 +29,10 @@ infra-up:
 	@echo "Provisioning production"
 	@$(CIVO) k3s create onlineboutique-prod --size g3.k3s.small --nodes 3 --wait
 	@$(CIVO) k3s config onlineboutique-prod --merge
+	@$(CIVO) k3s create onlineboutique-dev --size g3.k3s.small --nodes 3 --wait
+	@$(CIVO) k3s config onlineboutique-dev --merge
 
 .PHONY: infra-down
 infra-down:
 	@$(CIVO) k3s remove onlineboutique-prod
+	@$(CIVO) k3s remove onlineboutique-dev
