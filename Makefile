@@ -12,10 +12,7 @@ TERRAFORM=docker run --rm -it -u $(USER):$(GROUP) -v $$(pwd)/infra:/workdir $(TE
 CIVO=docker run --rm -it -u $(USER):$(GROUP) -v $$HOME/.civo.json:/.civo.json -v $$HOME/.kube/config:/.kube/config $(CIVO_CONTAINER)
 
 ${HOME}/.civo.json:
-	@echo "Login to Civo, navigate to https://www.civo.com/account/security and generate a security key"
-	@echo "Press Enter to Contine"
 	@echo "Creating .civo.json configuration file"
-	@read nothing
 	@touch $$HOME/.civo.json
 	@$(CIVO) apikey add civokey $(civo_token)
 
