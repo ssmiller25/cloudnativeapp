@@ -20,8 +20,8 @@ ${HOME}/.civo.json:
 k3s-list: ${HOME}/.civo.json
 	@$(CIVO) k3s list
 
-.PHONY: provision-infra
-provision-infra:
+.PHONY: infra-up
+infra-up:
 	@echo "This will provision 2 3-node Civo k3s cluster"
 	@echo "Please ensure you understand the costs ($16/month total as of 08/2021) before continuing"
 	@echo "Press Enter to Continue, or Ctrl+C to abort"
@@ -30,5 +30,6 @@ provision-infra:
 	@$(CIVO) k3s create onlineboutique-prod --size g3.k3s.small --nodes 3 --wait
 	@$(CIVO) k3s config onlineboutique-prod --merge
 
-.PHONY: teardown-infra
+.PHONY: infra-down
+infra-down:
 	@$(CIVO) k3s remove onlineboutique-prod
