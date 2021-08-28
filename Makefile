@@ -13,7 +13,6 @@ CIVO=docker run --rm -it -u $(USER):$(GROUP) -v $$HOME/.civo.json:/.civo.json $(
 
 ${HOME}/.civo.json:
 	@echo "Creating .civo.json configuration file"
-	@read nothing
 	@touch $$HOME/.civo.json
 	@$(CIVO) apikey add civokey $(civo_token)
 
