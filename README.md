@@ -8,6 +8,7 @@ The code and docs for the Fast Feedback session of [Civo's Devops Bootcamp](http
 - The following installed locally
   - Docker
   - Make
+  - [kubeclt](https://kubernetes.io/docs/tasks/tools/)
   - [skaffold](https://skaffold.dev/docs/install/)
 
 ## Setup
