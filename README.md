@@ -2,7 +2,11 @@
 
 The code and docs for the Fast Feedback session of [Civo's Devops Bootcamp](https://www.civo.com/blog/devops-bootcamp-2021).  This is a hard fork of [Google's Microservice Demo](https://github.com/GoogleCloudPlatform/microservices-demo), but modified to build out and run on Civo's infrastructure.
 
-**WARNING:** Terrafomr is keeping all state locally.  If actually using in a production environment, or even amoung multiple individuals, make sure to setup [a backend configuration](https://www.terraform.io/docs/language/settings/backends/configuration.html) to ensure the Terraform State remains consistent.
+## Setup
+
+- Copy `Makefile.env.sample` to `Makefile.env`, add your Civo CLI key
+
+**WARNING:** Terraform is keeping all state locally.  If actually using in a production environment, or even amoung multiple individuals, make sure to setup [a backend configuration](https://www.terraform.io/docs/language/settings/backends/configuration.html) to ensure the Terraform State remains consistent.
 
 <p align="center">
 <img src="src/frontend/static/icons/Hipster_HeroLogoCyan.svg" width="300" alt="Online Boutique" />

@@ -14,10 +14,10 @@ CIVO=docker run --rm -it -u $(USER):$(GROUP) -v $$HOME/.civo.json:/.civo.json $(
 ${HOME}/.civo.json:
 	@echo "Login to Civo, navigate to https://www.civo.com/account/security and generate a security key"
 	@echo "Press Enter to Contine"
+	@echo "Creating .civo.json configuration file"
 	@read nothing
-	@echo "Generating Civo APIKey"
 	@touch $$HOME/.civo.json
-	@$(CIVO) apikey add
+	@$(CIVO) apikey add civokey $(civo_token)
 
 .phone: k3s-list
 k3s-list: ${HOME}/.civo.json
