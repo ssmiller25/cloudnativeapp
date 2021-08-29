@@ -36,8 +36,7 @@ infra-up:
 	@$(CIVO) k3s config onlineboutique-prod > $$HOME/.kube/ob.prod
 	@$(CIVO) k3s create onlineboutique-dev --size g3.k3s.small --nodes 3 --wait
 	@$(CIVO) k3s config onlineboutique-dev > $$HOME/.kube/ob.dev
-	@KUBECONFIG=$$HOME/.kube/ob.prod:$$HOME/.kube/ob.dev:$$HOME/.kube/config kubectl config view --merge --flatten >
- $$HOME/.kube/config
+	@KUBECONFIG=$$HOME/.kube/ob.prod:$$HOME/.kube/ob.dev:$$HOME/.kube/config kubectl config view --merge --flatten > $$HOME/.kube/config
 	@rm $$HOME/.kube/ob.prod $$HOME/.kube/ob.dev
 
 .PHONY: infra-down
