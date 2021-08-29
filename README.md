@@ -16,6 +16,8 @@ The code and docs for the Fast Feedback session of [Civo's Devops Bootcamp](http
 - Copy `Makefile.env.sample` to `Makefile.env`, add your Civo CLI key
 - Run `make k3s-list` to verify your local environment is setup and the Civo key provided works
 
+## App Info
+
 <p align="center">
 <img src="src/frontend/static/icons/Hipster_HeroLogoCyan.svg" width="300" alt="Online Boutique" />
 </p>
@@ -79,22 +81,13 @@ shippingservice-6ccc89f8fd-v686r         1/1     Running   0          2m58s
 
 5. **Access the web frontend in a browser** using the frontend's `EXTERNAL_IP`.
 
-```
-kubectl get service frontend-external | awk '{print $4}'
-```
-
-*Example output - do not copy*
-
-```
-EXTERNAL-IP
-<your-ip>
+```sh
+kubectl get ingress present -o jsonpath="{.status.loadBalancer.ingress[0].ip}{\"\n\"}"
 ```
 
-**Note**- you may see `<pending>` while GCP provisions the load balancer. If this happens, wait a few minutes and re-run the command.
+1. [Optional] **Clean up**:
 
-6. [Optional] **Clean up**:
-
-```
+```sh
 make infra-down
 ```
 

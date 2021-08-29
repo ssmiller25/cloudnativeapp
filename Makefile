@@ -5,6 +5,8 @@ TERRAFORM_CONTAINER?=hashicorp/terraform:1.0.5
 
 CIVO_CONTAINER?=civo/cli:v0.7.30
 
+BUILD_REPO?=quay.io/ssmiller25
+
 USER=$(shell id -u)
 GROUP=$(shell id -g)
 
@@ -42,3 +44,15 @@ infra-up:
 infra-down:
 	@$(CIVO) k3s remove onlineboutique-prod || true
 	@$(CIVO) k3s remove onlineboutique-dev || true
+
+.PHONY: skaffold-deploy-prod
+skaffold-deploy-prod:
+	@kubectl config use-context onlineboutique-prod
+	@echo "Deploying latest code to onlineboutique-prod"
+	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO)
+
+.PHONY: skaffold-deploy-dev
+skaffold-deploy-dev:
+	@kubectl config use-context onlineboutique-dev
+	@echo "Deploying latest code to onlineboutique-dev"
+	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO)
