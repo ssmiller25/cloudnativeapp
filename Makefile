@@ -23,21 +23,23 @@ k3s-list: ${HOME}/.civo.json
 	@$(CIVO) k3s list
 
 .PHONY: infra-up
-infra-up:
+infra-up: 
 	@echo "This will provision a 3-node medium Civo k3s cluster"
 	@echo "Please ensure you understand the costs (\$$16/month USD as of 08/2021) before continuing"
 	@echo "Press Enter to Continue, or Ctrl+C to abort"
 	@read nothing
 	@echo "Provisioning production"
 	@touch $$HOME/.civo.json
-	@mkdir $$HOME/.kube/
+	@mkdir $$HOME/.kube/ || true
 	@touch $$HOME/.kube/config
 	@$(CIVO) k3s create onlineboutique-prod --size g3.k3s.medium --nodes 3 --wait
 	@$(CIVO) k3s config onlineboutique-prod > $$HOME/.kube/ob.prod
 #	@$(CIVO) k3s create onlineboutique-dev --size g3.k3s.medium --nodes 3 --wait
 #	@$(CIVO) k3s config onlineboutique-dev > $$HOME/.kube/ob.dev
-	@KUBECONFIG=$$HOME/.kube/ob.prod:$$HOME/.kube/ob.dev:$$HOME/.kube/config kubectl config view --merge --flatten > $$HOME/.kube/config
-	@rm $$HOME/.kube/ob.prod $$HOME/.kube/ob.dev || true
+#	@KUBECONFIG=$$HOME/.kube/ob.prod:$$HOME/.kube/ob.dev:$$HOME/.kube/config kubectl config view --merge --flatten > $$HOME/.kube/config
+	@KUBECONFIG=$$HOME/.kube/ob.prod:$$HOME/.kube/config kubectl config view --merge --flatten > $$HOME/.kube/config
+#	@rm $$HOME/.kube/ob.prod $$HOME/.kube/ob.dev || true	
+	@rm $$HOME/.kube/ob.prod || true
 
 .PHONY: infra-down
 infra-down:
