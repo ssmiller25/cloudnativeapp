@@ -25,7 +25,7 @@ k3s-list: ${HOME}/.civo.json
 .PHONY: infra-up
 infra-up:
 	@echo "This will provision a 3-node medium Civo k3s cluster"
-	@echo "Please ensure you understand the costs ($$16/month USD as of 08/2021) before continuing"
+	@echo "Please ensure you understand the costs (\$$16/month USD as of 08/2021) before continuing"
 	@echo "Press Enter to Continue, or Ctrl+C to abort"
 	@read nothing
 	@echo "Provisioning production"
