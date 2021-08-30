@@ -24,7 +24,7 @@ k3s-list: ${HOME}/.civo.json
 
 .PHONY: infra-up
 infra-up:
-	@echo "This will provision 2 3-node Civo k3s cluster"
+	@echo "This will provision a 3-node medium Civo k3s cluster"
 	@echo "Please ensure you understand the costs ($$16/month USD as of 08/2021) before continuing"
 	@echo "Press Enter to Continue, or Ctrl+C to abort"
 	@read nothing
@@ -32,17 +32,17 @@ infra-up:
 	@touch $$HOME/.civo.json
 	@mkdir $$HOME/.kube/
 	@touch $$HOME/.kube/config
-	@$(CIVO) k3s create onlineboutique-prod --size g3.k3s.small --nodes 3 --wait
+	@$(CIVO) k3s create onlineboutique-prod --size g3.k3s.medium --nodes 3 --wait
 	@$(CIVO) k3s config onlineboutique-prod > $$HOME/.kube/ob.prod
-	@$(CIVO) k3s create onlineboutique-dev --size g3.k3s.small --nodes 3 --wait
-	@$(CIVO) k3s config onlineboutique-dev > $$HOME/.kube/ob.dev
+#	@$(CIVO) k3s create onlineboutique-dev --size g3.k3s.medium --nodes 3 --wait
+#	@$(CIVO) k3s config onlineboutique-dev > $$HOME/.kube/ob.dev
 	@KUBECONFIG=$$HOME/.kube/ob.prod:$$HOME/.kube/ob.dev:$$HOME/.kube/config kubectl config view --merge --flatten > $$HOME/.kube/config
-	@rm $$HOME/.kube/ob.prod $$HOME/.kube/ob.dev
+	@rm $$HOME/.kube/ob.prod $$HOME/.kube/ob.dev || true
 
 .PHONY: infra-down
 infra-down:
 	@$(CIVO) k3s remove onlineboutique-prod || true
-	@$(CIVO) k3s remove onlineboutique-dev || true
+#	@$(CIVO) k3s remove onlineboutique-dev || true
 
 .PHONY: skaffold-deploy-prod
 skaffold-deploy-prod:
@@ -50,8 +50,8 @@ skaffold-deploy-prod:
 	@echo "Deploying latest code to onlineboutique-prod"
 	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO)
 
-.PHONY: skaffold-deploy-dev
-skaffold-deploy-dev:
-	@kubectl config use-context onlineboutique-dev
-	@echo "Deploying latest code to onlineboutique-dev"
-	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO)
+#.PHONY: skaffold-deploy-dev
+#skaffold-deploy-dev:
+#	@kubectl config use-context onlineboutique-dev
+#	@echo "Deploying latest code to onlineboutique-dev"
+#	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO)
