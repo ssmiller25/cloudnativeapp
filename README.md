@@ -6,6 +6,7 @@ The code and docs for the Fast Feedback session of [Civo's Devops Bootcamp](http
 
 - A Civo account
 - The following installed locally
+  - A public Docker Repository ([Docker.IO](https://www.docker.com/),([Quay](https://quay.io/), etc)
   - Docker
   - Make
   - [kubeclt](https://kubernetes.io/docs/tasks/tools/)
