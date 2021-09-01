@@ -43,25 +43,27 @@ infra-down:
 	@$(CIVO) k3s remove onlineboutique-prod || true
 	@kubectl config delete-context onlineboutique-prod || true
 	@kubectl config delete-user onlineboutique-prod || true
- 	@$(CIVO) k3s remove onlineboutique-dev || true
- 	@kubectl config delete-context onlineboutique-dev || true
-  @kubectl config delete-user onlineboutique-dev || true
+	@$(CIVO) k3s remove onlineboutique-dev || true
+	@kubectl config delete-context onlineboutique-dev || true
+	@kubectl config delete-user onlineboutique-dev || true
 
 .PHONY: skaffold-deploy-prod
 skaffold-deploy-prod:
 	@kubectl config use-context onlineboutique-prod
 	@echo "Deploying latest code to onlineboutique-prod"
-	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO)
+	@kubectl create ns cnapp-prod
+	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-prod
 
 .PHONY: skaffold-deploy-dev
 skaffold-deploy-dev:
 	@kubectl config use-context onlineboutique-dev
 	@echo "Deploying latest code to onlineboutique-dev"
-	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO)
+	@kubectl create ns cnapp-pr
+	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-pr
 
 	.PHONY: skaffold-deploy-dev
 skaffold-deploy-personal:
 	@kubectl config use-context onlineboutique-dev
 	@kubectl create ns cnapp-$(USERNAME)
 	@echo "Deploying latest code to onlineboutique-dev"
-	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) 
+	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-$(USERNAME)

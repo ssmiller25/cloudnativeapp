@@ -40,8 +40,8 @@ add them to the cart, and purchase them.
 1. **Clone this repository.**
 
 ```
-git clone https://github.com/ssmiller25/civo-ffdemo.git
-cd civo-ffdemo
+git clone https://github.com/ssmiller25/cloudnativeapp.git
+cd cloudnativeapp
 ```
 
 2. **Provision the Prod and Dev Civo Clusters to demo fast feedback taks.**
