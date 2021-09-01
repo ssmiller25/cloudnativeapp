@@ -23,17 +23,17 @@ k3s-list: ${HOME}/.civo.json
 
 .PHONY: infra-up
 infra-up: 
-	@echo "This will provision a 2 X 3-node small Civo k3s cluster"
-	@echo "Please ensure you understand the costs (\$$16/month USD as of 08/2021) before continuing"
+	@echo "This will provision a 2 X 3-node medium Civo k3s cluster"
+	@echo "Please ensure you understand the costs (\$$32/month USD as of 08/2021) before continuing"
 	@echo "Press Enter to Continue, or Ctrl+C to abort"
 	@read nothing
 	@echo "Provisioning production"
 	@touch $$HOME/.civo.json
 	@mkdir $$HOME/.kube/ || true
 	@touch $$HOME/.kube/config
-	@$(CIVO) k3s create onlineboutique-prod --size g3.k3s.small --nodes 3 --wait
+	@$(CIVO) k3s create onlineboutique-prod --size g3.k3s.medium --nodes 3 --wait
 	@$(CIVO) k3s config onlineboutique-prod > $$HOME/.kube/ob.prod
-	@$(CIVO) k3s create onlineboutique-dev --size g3.k3s.small --nodes 3 --wait
+	@$(CIVO) k3s create onlineboutique-dev --size g3.k3s.medium --nodes 3 --wait
 	@$(CIVO) k3s config onlineboutique-dev > $$HOME/.kube/ob.dev
 	@KUBECONFIG=$$HOME/.kube/ob.prod:$$HOME/.kube/ob.dev:$$HOME/.kube/config kubectl config view --merge --flatten > $$HOME/.kube/config
 	@rm $$HOME/.kube/ob.prod $$HOME/.kube/ob.dev || true	
@@ -47,22 +47,28 @@ infra-down:
 	@kubectl config delete-context onlineboutique-dev || true
 	@kubectl config delete-user onlineboutique-dev || true
 
-.PHONY: skaffold-deploy-prod
-skaffold-deploy-prod:
+.PHONY: prod
+prod:
 	@kubectl config use-context onlineboutique-prod
 	@echo "Deploying latest code to onlineboutique-prod"
 	@kubectl create ns cnapp-prod
 	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-prod
+	@kubectl apply -f kubernetes-manifest-ingress/ingress.yaml
 
-.PHONY: skaffold-deploy-dev
-skaffold-deploy-dev:
+.PHONY: pr check-pr
+check-pr:
+ifndef PR
+	$(error PR is undefined)
+endif
+
+pr: check-pr
 	@kubectl config use-context onlineboutique-dev
 	@echo "Deploying latest code to onlineboutique-dev"
-	@kubectl create ns cnapp-pr
-	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-pr
-
-	.PHONY: skaffold-deploy-dev
-skaffold-deploy-personal:
+	@kubectl create ns cnapp-pr-$(PR)
+	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-pr-$(PR)
+	@kubectl apply -f kubernetes-manifest-ingress/ingress.yaml
+	.PHONY: dev
+dev:
 	@kubectl config use-context onlineboutique-dev
 	@kubectl create ns cnapp-$(USERNAME)
 	@echo "Deploying latest code to onlineboutique-dev"
