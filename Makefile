@@ -53,7 +53,7 @@ prod:
 	@echo "Deploying latest code to onlineboutique-prod"
 	@kubectl create ns cnapp-prod
 	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-prod
-	@kubectl apply -f kubernetes-manifest-ingress/ingress.yaml
+	@kubectl apply -n cnapp-prod -f kubernetes-manifests-ingress/ingress.yaml
 
 .PHONY: pr check-pr
 check-pr:
@@ -64,12 +64,12 @@ endif
 pr: check-pr
 	@kubectl config use-context onlineboutique-dev
 	@echo "Deploying latest code to onlineboutique-dev"
-	@kubectl create ns cnapp-pr-$(PR)
+	@kubectl create ns cnapp-pr-$(PR) || true
 	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-pr-$(PR)
-	@kubectl apply -f kubernetes-manifest-ingress/ingress.yaml
+	@kubectl apply -n cnapp-pr-$(PR) -f kubernetes-manifests-ingress/ingress.yaml
 	.PHONY: dev
 dev:
 	@kubectl config use-context onlineboutique-dev
-	@kubectl create ns cnapp-$(USERNAME)
+	@kubectl create ns cnapp-$(USERNAME) || true
 	@echo "Deploying latest code to onlineboutique-dev"
 	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-$(USERNAME)

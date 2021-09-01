@@ -110,7 +110,7 @@ PR=1234 make pr
 2. **Determine the rontend IP address of the development cluster** using the frontend's `EXTERNAL_IP`.
 
 ```sh
-kubectl get ingress present -o jsonpath="{.status.loadBalancer.ingress[0].ip}{\"\n\"}"
+kubectl get ingress frontend -n cnapp-pr-1234 -o jsonpath="{.status.loadBalancer.ingress[0].ip}{\"\n\"}"
 ```
 
 3. **Browse to the PR developemnt instance**
@@ -126,7 +126,7 @@ make prod
 2. **Determine the rontend IP address of the production cluster** using the frontend's `EXTERNAL_IP`.
 
 ```sh
-kubectl get ingress present -o jsonpath="{.status.loadBalancer.ingress[0].ip}{\"\n\"}"
+kubectl get ingress frontend -n cnapp-prod -o jsonpath="{.status.loadBalancer.ingress[0].ip}{\"\n\"}"
 ```
 
 3. **Browse to the PR developemnt instance**
