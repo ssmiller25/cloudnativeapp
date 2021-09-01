@@ -1,11 +1,12 @@
-# Civo FastFeedback Demo
+# Cloud Native App Demo
 
-The code and docs for the Fast Feedback session of [Civo's Devops Bootcamp](https://www.civo.com/blog/devops-bootcamp-2021).  This is a hard fork of [Google's Microservice Demo](https://github.com/GoogleCloudPlatform/microservices-demo), but modified to build out and run on Civo's infrastructure.
+A full stack cloud native app demo.  Developed for the Fast Feedback session of [Civo's Devops Bootcamp](https://www.civo.com/blog/devops-bootcamp-2021).  This is a hard fork of [Google's Microservice Demo](https://github.com/GoogleCloudPlatform/microservices-demo), but modified to build out and run easily on multiple providers.
 
 ## Prerequisites
 
 - A Civo account
 - The following installed locally
+  - A public Docker Repository ([Docker.IO](https://www.docker.com/),([Quay](https://quay.io/), etc)
   - Docker
   - Make
   - [kubeclt](https://kubernetes.io/docs/tasks/tools/)
@@ -14,6 +15,7 @@ The code and docs for the Fast Feedback session of [Civo's Devops Bootcamp](http
 ## Setup
 
 - Copy `Makefile.env.sample` to `Makefile.env`, add your Civo CLI key
+- Update the `BUILD_REPO` in  `Makefile` to point to your personal repository
 - Run `make k3s-list` to verify your local environment is setup and the Civo key provided works
 
 ## App Info
@@ -33,32 +35,38 @@ add them to the cart, and purchase them.
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | [![Screenshot of store homepage](./docs/img/online-boutique-frontend-1.png)](./docs/img/online-boutique-frontend-1.png) | [![Screenshot of checkout screen](./docs/img/online-boutique-frontend-2.png)](./docs/img/online-boutique-frontend-2.png) |
 
-## Quickstart (GKE)
+## Quickstart (Civo)
 
 
 1. **Clone this repository.**
 
 ```
-git clone https://github.com/ssmiller25/civo-ffdemo.git
-cd civo-ffdemo
+git clone https://github.com/ssmiller25/cloudnativeapp.git
+cd cloudnativeapp
 ```
 
 2. **Provision the Prod and Dev Civo Clusters to demo fast feedback taks.**
 
 ```sh
-make infra-up
+make civo-up
 ```
 
-3. **Deploy the sample app to the cluster.**
+3. **Deploy a dev instance - environment with for just your user**
 
-```
-kubectl apply -f ./release/kubernetes-manifests.yaml
+```sh
+make dev
 ```
 
-4. **Wait for the Pods to be ready.**
+or to override the username
 
+```sh
+USERNAME=smiller make dev
 ```
-kubectl get pods
+
+4. **Wait for the Pods to be ready.  Namespace will be cnapp-<yourusername>**
+
+```sh
+kubectl get pods -n cnapp-smiller
 ```
 
 After a few minutes, you should see:
@@ -79,16 +87,59 @@ redis-cart-5f59546cdd-5jnqf              1/1     Running   0          2m58s
 shippingservice-6ccc89f8fd-v686r         1/1     Running   0          2m58s
 ```
 
-5. **Access the web frontend in a browser** using the frontend's `EXTERNAL_IP`.
+5. **Port Forward to the frontend**
 
 ```sh
-kubectl get ingress present -o jsonpath="{.status.loadBalancer.ingress[0].ip}{\"\n\"}"
+kubectl port-forward -n cnapp-smiller svc/frontend 8080:80
 ```
 
-1. [Optional] **Clean up**:
+6. **Browse to <http://localhost:8080> and shoudl see the frontend of the app**
+
+## Pipeline Tests
+
+This procedures are normally run from a CI/CD pipeline, but can be tested manually
+
+1. **Deploy a dev instance triggered by PR - will include ingress**
+
+
 
 ```sh
-make infra-down
+PR=1234 make pr
+```
+
+2. **Determine the rontend IP address of the development cluster** using the frontend's `EXTERNAL_IP`.
+
+```sh
+kubectl get ingress frontend -n cnapp-pr-1234 -o jsonpath="{.status.loadBalancer.ingress[0].ip}{\"\n\"}"
+```
+
+3. **Browse to the PR developemnt instance**
+
+http://<ip address>/
+
+4. **Deploy the production instance - will also include ingress**
+
+```sh
+make prod
+```
+
+2. **Determine the rontend IP address of the production cluster** using the frontend's `EXTERNAL_IP`.
+
+```sh
+kubectl get ingress frontend -n cnapp-prod -o jsonpath="{.status.loadBalancer.ingress[0].ip}{\"\n\"}"
+```
+
+3. **Browse to the PR developemnt instance**
+
+http://<ip address>/
+
+## Teardown
+
+Teardown **BOTH** prod and dev environments
+
+
+```sh
+make civo-down
 ```
 
 ## Other Deployment Options
