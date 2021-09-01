@@ -21,8 +21,8 @@ ${HOME}/.civo.json:
 k3s-list: ${HOME}/.civo.json
 	@$(CIVO) k3s list
 
-.PHONY: infra-up
-infra-up: 
+.PHONY: civo-up
+civo-up: 
 	@echo "This will provision a 2 X 3-node medium Civo k3s cluster"
 	@echo "Please ensure you understand the costs (\$$32/month USD as of 08/2021) before continuing"
 	@echo "Press Enter to Continue, or Ctrl+C to abort"
@@ -38,8 +38,8 @@ infra-up:
 	@KUBECONFIG=$$HOME/.kube/ob.prod:$$HOME/.kube/ob.dev:$$HOME/.kube/config kubectl config view --merge --flatten > $$HOME/.kube/config
 	@rm $$HOME/.kube/ob.prod $$HOME/.kube/ob.dev || true	
 
-.PHONY: infra-down
-infra-down:
+.PHONY: civo-down
+civo-down:
 	@$(CIVO) k3s remove onlineboutique-prod || true
 	@kubectl config delete-context onlineboutique-prod || true
 	@kubectl config delete-user onlineboutique-prod || true

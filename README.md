@@ -1,6 +1,6 @@
-# Civo FastFeedback Demo
+# Cloud Native App Demo
 
-The code and docs for the Fast Feedback session of [Civo's Devops Bootcamp](https://www.civo.com/blog/devops-bootcamp-2021).  This is a hard fork of [Google's Microservice Demo](https://github.com/GoogleCloudPlatform/microservices-demo), but modified to build out and run on Civo's infrastructure.
+A full stack cloud native app demo.  Developed for the Fast Feedback session of [Civo's Devops Bootcamp](https://www.civo.com/blog/devops-bootcamp-2021).  This is a hard fork of [Google's Microservice Demo](https://github.com/GoogleCloudPlatform/microservices-demo), but modified to build out and run easily on multiple providers.
 
 ## Prerequisites
 
@@ -48,7 +48,7 @@ cd cloudnativeapp
 2. **Provision the Prod and Dev Civo Clusters to demo fast feedback taks.**
 
 ```sh
-make infra-up
+make civo-up
 ```
 
 3. **Deploy a dev instance - environment with for just your user**
@@ -137,10 +137,9 @@ http://<ip address>/
 
 Teardown **BOTH** prod and dev environments
 
-1. [Optional] **Clean up**:
 
 ```sh
-make infra-down
+make civo-down
 ```
 
 ## Other Deployment Options
