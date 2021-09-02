@@ -21,7 +21,7 @@ on:
       - release/*
 jobs:
   code-tests:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-dotnet@v1
@@ -41,37 +41,28 @@ jobs:
       run: |
         dotnet test src/cartservice/
   deployment-tests:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: code-tests
-    strategy:
-      matrix:
-        profile: ["local-code"]
-      fail-fast: true
     steps:
     - uses: actions/checkout@v2
-    - name: Build + Deploy PR images to GKE
+    - name: Install civo
+      uses: civo/action-civo
+      with:
+        token: ${{ secrets.CIVO_TOKEN }}
+    - name: Save Civo kubeconfig
+      run: civo kubernetes config onlineboutique-prod
+    - name: Login to Quay.IO
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+    - name: Build + Deploy PR image
       timeout-minutes: 20
       run: |
-        PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
-        NAMESPACE="pr${PR_NUMBER}"
-        echo "::set-env name=NAMESPACE::$NAMESPACE"
-        echo "::set-env name=PR_NUMBER::$PR_NUMBER"
-
-        gcloud container clusters get-credentials $PR_CLUSTER --zone $ZONE --project $PROJECT_ID
-        cat <<EOF | kubectl apply -f -
-        apiVersion: v1
-        kind: Namespace
-        metadata:
-          name: $NAMESPACE
-        EOF
-        echo Deploying application
-        skaffold config set --global local-cluster false
-        skaffold run --default-repo=gcr.io/$PROJECT_ID/$GITHUB_REF --tag=$GITHUB_SHA --namespace=$NAMESPACE
+        make prod
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-        PROJECT_ID: "onlineboutique-ci"
-        PR_CLUSTER: "online-boutique-pr"
-        ZONE: "us-east1-b"
     - name: Wait For Pods
       timeout-minutes: 20
       run: |
@@ -94,7 +85,7 @@ jobs:
       run: |
         set -x
         # start fresh loadgenerator pod
-        kubectl delete pod -l app=loadgenerator
+        kubectl delete pod -n cnapp-prod -l app=loadgenerator
         # wait for requests to come in
         REQUEST_COUNT="0"
         while [[ "$REQUEST_COUNT"  -lt "50"  ]]; do

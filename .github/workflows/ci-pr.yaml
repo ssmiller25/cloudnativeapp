@@ -54,7 +54,13 @@ jobs:
       with:
         token: ${{ secrets.CIVO_TOKEN }}
     - name: Save Civo kubeconfig
-      run: civo kubernetes config onlineboutique-prod
+      run: civo kubernetes config onlineboutique-dev
+    - name: Login to Quay.IO
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
     - name: Build + Deploy PR images
       timeout-minutes: 20
       run: |
@@ -83,12 +89,12 @@ jobs:
       timeout-minutes: 5
       run: |
         set -x
-        NAMESPACE="pr${PR_NUMBER}"
+        NAMESPACE="cnapp-pr-${PR}"
         get_externalIP() {
-          kubectl get service frontend-external --namespace $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+          kubectl get ingress frontend -n cnapp-pr-${PR} -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
         }
         until [[ -n "$(get_externalIP)" ]]; do
-          echo "Querying for external IP for frontend-external on namespace: $NAMESPACE{}"
+          echo "Querying for external IP for frontend ingress on namespace: $NAMESPACE{}"
         sleep 3
         done
         EXTERNAL_IP=$(get_externalIP)
