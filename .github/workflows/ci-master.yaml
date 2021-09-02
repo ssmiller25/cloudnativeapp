@@ -63,7 +63,7 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_ROBOT_TOKEN }}
-    - name: Build + Deploy PR image
+    - name: Build + Deploy Production
       timeout-minutes: 20
       run: |
         make prod
