@@ -56,7 +56,9 @@ jobs:
       env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     - name: Save Civo kubeconfig
-      run: civo kubernetes config onlineboutique-dev
+      run: |
+        mkdir $HOME/.kube
+        civo kubernetes config onlineboutique-dev > $HOME/.kube/config
     - name: Login to Quay.IO
       uses: docker/login-action@v1  
       with:
