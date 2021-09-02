@@ -67,7 +67,8 @@ pr: check-pr
 	@kubectl create ns cnapp-pr-$(PR) || true
 	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-pr-$(PR)
 	@kubectl apply -n cnapp-pr-$(PR) -f kubernetes-manifests-ingress/ingress.yaml
-	.PHONY: dev
+
+.PHONY: dev
 dev:
 	@kubectl config use-context onlineboutique-dev
 	@kubectl create ns cnapp-$(USERNAME) || true
