@@ -93,6 +93,8 @@ jobs:
         kubectl wait --for=condition=available --timeout=1000s deployment/productcatalogservice
         kubectl wait --for=condition=available --timeout=1000s deployment/recommendationservice
         kubectl wait --for=condition=available --timeout=1000s deployment/shippingservice
+      env:
+        PR: ${{ github.event.pull_request.number }}
     - name: Query EXTERNAL_IP for staging
       timeout-minutes: 5
       run: |
