@@ -73,7 +73,7 @@ jobs:
       timeout-minutes: 20
       run: |
         set -x
-        kubectl config set-context --current --namespace=$NAMESPACE
+        kubectl config set-context --current --namespace=cnapp-prod
         kubectl wait --for=condition=available --timeout=1000s deployment/redis-cart
         kubectl wait --for=condition=available --timeout=1000s deployment/adservice
         kubectl wait --for=condition=available --timeout=1000s deployment/cartservice
