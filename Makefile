@@ -1,4 +1,4 @@
-include Makefile.env
+-include Makefile.env
 
 CIVO_CONTAINER?=civo/cli:v0.7.30
 
