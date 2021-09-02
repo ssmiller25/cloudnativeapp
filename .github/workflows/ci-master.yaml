@@ -45,6 +45,10 @@ jobs:
     needs: code-tests
     steps:
     - uses: actions/checkout@v2
+    - name: Install skaffold
+      uses: yokawasa/action-setup-kube-tools@v0.7.1
+      with:
+        skaffold: '1.31.1'
     - name: Install civo
       uses: civo/action-civo@v1.0.0
       with:
