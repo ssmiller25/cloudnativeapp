@@ -50,7 +50,7 @@ jobs:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
     - name: Install civo
-      uses: civo/action-civo
+      uses: civo/action-civo@v1.0.0
       with:
         token: ${{ secrets.CIVO_TOKEN }}
     - name: Save Civo kubeconfig
