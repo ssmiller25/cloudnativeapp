@@ -53,6 +53,8 @@ jobs:
       uses: civo/action-civo@v1.0.0
       with:
         token: ${{ secrets.CIVO_TOKEN }}
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     - name: Save Civo kubeconfig
       run: |
         mkdir $HOME/.kube
