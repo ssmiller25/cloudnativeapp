@@ -9,7 +9,7 @@ A full stack cloud native app demo.  Developed for the Fast Feedback session of 
   - A public Docker Repository ([Docker.IO](https://www.docker.com/),([Quay](https://quay.io/), etc)
   - Docker
   - Make
-  - [kubeclt](https://kubernetes.io/docs/tasks/tools/)
+  - [kubectl](https://kubernetes.io/docs/tasks/tools/)
   - [skaffold](https://skaffold.dev/docs/install/)
 
 ## Setup
@@ -62,6 +62,8 @@ or to override the username
 ```sh
 USERNAME=smiller make dev
 ```
+
+**NOTE: When you deploy the development environment, it will run a Kubernetes cluster in your Civo account until you stop it. In order to avoid unexpected charges, make sure to delete your cluster when you're done.**
 
 4. **Wait for the Pods to be ready.  Namespace will be cnapp-<yourusername>**
 
@@ -141,6 +143,9 @@ Teardown **BOTH** prod and dev environments
 ```sh
 make civo-down
 ```
+  
+  
+**NOTE: If you don't shut down your clusters your account will continue to be charged for them.**
 
 ## Other Deployment Options
 
