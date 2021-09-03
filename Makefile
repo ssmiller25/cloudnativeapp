@@ -51,7 +51,7 @@ civo-down:
 prod:
 	@kubectl config use-context onlineboutique-prod
 	@echo "Deploying latest code to onlineboutique-prod"
-	@kubectl create ns cnapp-prod
+	@kubectl create ns cnapp-prod || true
 	@skaffold run -f=skaffold.yaml --default-repo=$(BUILD_REPO) -n cnapp-prod
 	@kubectl apply -n cnapp-prod -f kubernetes-manifests-ingress/ingress.yaml
 
